@@ -2,7 +2,7 @@
 
 namespace TaskTrackerCLI
 {
-    static class Program
+    class Program
     {
         static void Main(string[] args)
         {
@@ -25,17 +25,14 @@ namespace TaskTrackerCLI
                     taskManager.AddTask(string.Join(" ", args.Skip(1)));
                     break;
 
-                case "list":
-                    taskManager.ListTasks();
-                    break;
-
-                case "complete":
-                    if (args.Length < 2 || !int.TryParse(args[1], out int completeId))
+                case "update":
+                    if (args.Length < 3 || !int.TryParse(args[1], out int updateId) || !Enum.TryParse(args[2], true, out TaskStatus newStatus))
                     {
-                        Console.WriteLine("Error: Please provide a valid task ID.");
+                        Console.WriteLine("Error: Please provide a valid task ID and status.");
                         return;
                     }
-                    taskManager.MarkTaskAsCompleted(completeId);
+                    var newTitle = args.Length > 3 ? string.Join(" ", args.Skip(3)) : null;
+                    taskManager.UpdateTask(updateId, newTitle, newStatus);
                     break;
 
                 case "delete":
@@ -45,6 +42,42 @@ namespace TaskTrackerCLI
                         return;
                     }
                     taskManager.DeleteTask(deleteId);
+                    break;
+
+                case "list":
+                    if (args.Length == 1)
+                    {
+                        taskManager.ListAllTasks();
+                    }
+                    else if (args.Length == 2)
+                    {
+                        if (Enum.TryParse(args[1], true, out TaskStatus status))
+                        {
+                            taskManager.ListTasks(status);
+                        }
+                        else if (args[1].Equals("done", StringComparison.OrdinalIgnoreCase))
+                        {
+                            taskManager.ListDoneTasks();
+                        }
+                        else if (args[1].Equals("notdone", StringComparison.OrdinalIgnoreCase))
+                        {
+                            taskManager.ListNotDoneTasks();
+                        }
+                        else if (args[1].Equals("inprogress", StringComparison.OrdinalIgnoreCase))
+                        {
+                            taskManager.ListInProgressTasks();
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Unknown list filter '{args[1]}'.");
+                            ShowHelp();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Invalid arguments for 'list' command.");
+                        ShowHelp();
+                    }
                     break;
 
                 default:
@@ -57,10 +90,10 @@ namespace TaskTrackerCLI
         static void ShowHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("  add <title>      - Add a new task with the specified title.");
-            Console.WriteLine("  list             - List all tasks.");
-            Console.WriteLine("  complete <id>    - Mark the task with the specified ID as completed.");
-            Console.WriteLine("  delete <id>      - Delete the task with the specified ID.");
+            Console.WriteLine("  add <title>                - Add a new task with the specified title.");
+            Console.WriteLine("  update <id> <title> <status> - Update a task with the specified ID. Status can be NotStarted, InProgress, or Done.");
+            Console.WriteLine("  delete <id>                - Delete the task with the specified ID.");
+            Console.WriteLine("  list [status]              - List all tasks. Optionally, filter by status: NotStarted, InProgress, Done, notdone, or inprogress.");
         }
     }
 }
