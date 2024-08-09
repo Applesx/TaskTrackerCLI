@@ -12,9 +12,15 @@ namespace TaskTrackerCLI
 
         public void AddTask(string title)
         {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                Console.WriteLine("Error: Task title cannot be empty");
+                return;
+            }
+            
             var task = new Task { Id = nextId++, Title = title, IsCompleted = false };
             tasks.Add(task);
-            Console.WriteLine("Task added.");
+            Console.WriteLine($"Task added with Id {task.Id}.");
         }
 
         public void ListTasks()
