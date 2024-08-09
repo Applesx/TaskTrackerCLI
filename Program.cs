@@ -2,7 +2,7 @@
 
 namespace TaskTrackerCLI
 {
-   static class Program
+    static class Program
     {
         static void Main(string[] args)
         {
@@ -19,31 +19,36 @@ namespace TaskTrackerCLI
                 case "add":
                     if (args.Length < 2)
                     {
-                        Console.WriteLine("Please provide a title for the task.");
+                        Console.WriteLine("Error: Please provide a title for the task.");
                         return;
                     }
                     taskManager.AddTask(string.Join(" ", args.Skip(1)));
                     break;
+
                 case "list":
                     taskManager.ListTasks();
                     break;
+
                 case "complete":
-                    if (args.Length < 2 || !int.TryParse(args[1], out int id))
+                    if (args.Length < 2 || !int.TryParse(args[1], out int completeId))
                     {
-                        Console.WriteLine("Please provide a valid task ID.");
+                        Console.WriteLine("Error: Please provide a valid task ID.");
                         return;
                     }
-                    taskManager.MarkTaskAsCompleted(id);
+                    taskManager.MarkTaskAsCompleted(completeId);
                     break;
+
                 case "delete":
                     if (args.Length < 2 || !int.TryParse(args[1], out int deleteId))
                     {
-                        Console.WriteLine("Please provide a valid task ID.");
+                        Console.WriteLine("Error: Please provide a valid task ID.");
                         return;
                     }
                     taskManager.DeleteTask(deleteId);
                     break;
+
                 default:
+                    Console.WriteLine($"Error: Unknown command '{args[0]}'.");
                     ShowHelp();
                     break;
             }
