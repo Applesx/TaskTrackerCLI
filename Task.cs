@@ -3,6 +3,12 @@ using System;
 
 namespace TaskTrackerCLI
 {
+    public enum TaskStatus
+    {
+        InProgress,
+        NotStarted,
+        Done
+    }
     public class Task
     {
         public int Id { get; set; }
