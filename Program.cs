@@ -1,9 +1,8 @@
 ﻿// Program.cs
-using System;
 
 namespace TaskTrackerCLI
 {
-    class Program
+   static class Program
     {
         static void Main(string[] args)
         {
